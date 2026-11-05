@@ -1,0 +1,11 @@
+source,target,multiplier
+Majestic,Vidhana Soudha,3.0
+Vidhana Soudha,Majestic,3.0
+Vidhana Soudha,MG Road,3.0
+MG Road,Vidhana Soudha,3.0
+Majestic,Cubbon Park,1.0
+Cubbon Park,Majestic,1.0
+Cubbon Park,MG Road,1.0
+MG Road,Cubbon Park,1.0
+MG Road,Indiranagar,1.2
+Indiranagar,MG Road,1.2

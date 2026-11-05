@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Smart Urban Logistics</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <main>
+        <p class="eyebrow">LEARNING LAB · FASTAPI + MYSQL</p>
+        <h1>Smart Urban Logistics · Bengaluru</h1>
+        <p>Explore the shortest road route or the fastest route with simulated traffic.</p>
+        <form id="planner"><label>From<select id="source" required></select></label>
+            <label>To<select id="target" required></select></label>
+            <label>Optimize<select id="mode">
+                    <option value="shortest">Shortest distance</option>
+                    <option value="fastest">Fastest travel time</option>
+                </select></label>
+            <button id="submit" disabled>Find route</button>
+        </form>
+        <p id="status" role="status" aria-live="polite">Loading locations…</p>
+        <img id="map" src="/map" alt="Synthetic city road network; selected route appears in green">
+        <details>
+            <summary>API response</summary>
+            <pre id="result">Choose your route above.</pre>
+        </details>
+        <h2>Recent routes</h2><button id="refresh" type="button">Refresh history</button>
+        <ul id="history"></ul>
+        <footer>Bengaluru names · schematic kilometres · traffic.csv supplies simulated delay factors · <a
+                href="/docs">API documentation</a></footer>
+    </main>
+    <script src="/static/app.js"></script>
+</body>
+
+</html>

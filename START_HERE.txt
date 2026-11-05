@@ -1,0 +1,100 @@
+================================================================================
+SMART URBAN LOGISTICS (BENGALURU EDITION) — QUICK START GUIDE FOR STUDENTS
+================================================================================
+
+This project is a beginner-friendly delivery route optimization application built
+with FastAPI, MySQL, NumPy, pandas, and Matplotlib.
+
+--------------------------------------------------------------------------------
+STEP-BY-STEP SETUP GUIDE
+--------------------------------------------------------------------------------
+
+STEP 1: Start MySQL Server
+  - Ensure your MySQL Server Windows service is running (e.g., MySQL80 or MySQL84).
+  - You can check via Windows Services (services.msc) or run in an Admin terminal:
+      net start MySQL80
+    (or in PowerShell: Start-Service MySQL80)
+
+STEP 2: Create Python Virtual Environment (.venv) & Install Dependencies
+  Open a terminal in this project root folder:
+
+  In Command Prompt (CMD):
+      py -3.14 -m venv .venv
+      .venv\Scripts\activate.bat
+      python -m pip install --upgrade pip
+      python -m pip install -r requirements.txt
+
+  In PowerShell:
+      py -3.14 -m venv .venv
+      .\.venv\Scripts\python.exe -m pip install --upgrade pip
+      .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+
+STEP 3: Configure Database Credentials (.env)
+  - Copy `.env.example` to `.env`:
+      In CMD:         copy .env.example .env
+      In PowerShell:  Copy-Item .env.example .env
+  - Open `.env` in VS Code or Notepad and set your MySQL credentials:
+      DB_HOST=127.0.0.1
+      DB_PORT=3306
+      DB_NAME=smart_logistics_bengaluru
+      DB_USER=root                    <-- change to your MySQL user
+      DB_PASSWORD=your_password       <-- change to your MySQL password
+      TRAFFIC_CSV=data/traffic.csv
+
+STEP 4: Run Database Migrations & Seed Data
+  Make sure your database (e.g. smart_logistics_bengaluru) exists in MySQL:
+  (If not, run in MySQL: CREATE DATABASE smart_logistics_bengaluru;)
+
+  Option A (Recommended — Automated Python Initializer):
+    1. Check database connection and schema compatibility (read-only):
+         In CMD:         python -m scripts.init_db --check-only
+         In PowerShell:  .\.venv\Scripts\python.exe -m scripts.init_db --check-only
+
+    2. Create tables (migrations) and insert sample Bengaluru locations/roads (seed):
+         In CMD:         python -m scripts.init_db
+         In PowerShell:  .\.venv\Scripts\python.exe -m scripts.init_db
+
+    * Safe execution: It will not delete or overwrite your existing data!
+
+  Option B (Manual SQL Execution via Workbench or MySQL CLI):
+    Open MySQL Workbench or MySQL CLI, select `smart_logistics_bengaluru` and execute:
+      1. sql/schema.sql  (creates tables: locations, roads, route_history)
+      2. sql/seed.sql    (inserts default Bengaluru locations and roads)
+
+    Via MySQL CLI:
+      mysql -h 127.0.0.1 -u <user> -p smart_logistics_bengaluru < sql/schema.sql
+      mysql -h 127.0.0.1 -u <user> -p smart_logistics_bengaluru < sql/seed.sql
+
+STEP 5: Start the FastAPI Server
+  In CMD:
+      scripts\start.cmd
+  In PowerShell:
+      .\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+
+STEP 6: Open the Application
+  - Interactive Web App:   http://127.0.0.1:8000
+  - Swagger API Docs:      http://127.0.0.1:8000/docs
+  - API Health Check:      http://127.0.0.1:8000/health
+
+STEP 7: Try Route Planning
+  - Select "Majestic" as Source and "MG Road" as Destination.
+  - Test both modes:
+      1. Shortest Distance: Traverses shortest path (Majestic -> Vidhana Soudha -> MG Road).
+      2. Fastest Travel Time: Accounts for traffic congestion (takes the faster detour).
+  - Every calculation is saved into the `route_history` table automatically!
+
+STEP 8: Stopping the Server
+  - Press Ctrl+C in the terminal to stop FastAPI.
+
+--------------------------------------------------------------------------------
+API & POSTMAN TESTING
+--------------------------------------------------------------------------------
+- Example POST /route payload:
+    {"source_id": 1, "target_id": 4, "mode": "fastest"}
+
+- Postman collection available at:
+    postman/Smart_Urban_Logistics.postman_collection.json
+
+For detailed documentation, architectural flow, and troubleshooting, refer to:
+  README.md
+================================================================================

@@ -1,0 +1,155 @@
+{
+  "info": {
+    "name": "Smart Urban Logistics",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "source_id",
+      "value": "1"
+    },
+    {
+      "key": "target_id",
+      "value": "4"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/health"
+      }
+    },
+    {
+      "name": "Locations (capture demo IDs)",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/locations"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Locations available\", () => pm.response.to.have.status(200));",
+              "const rows = pm.response.json();",
+              "for (const [key, name] of [[\"source_id\", \"Majestic\"], [\"target_id\", \"MG Road\"]]) {",
+              "  const place = rows.find(p => p.name === name);",
+              "  if (place) pm.collectionVariables.set(key, String(place.id));",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Roads",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/roads"
+      }
+    },
+    {
+      "name": "NumPy distances",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/distances"
+      }
+    },
+    {
+      "name": "History",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/route-history?limit=10"
+      }
+    },
+    {
+      "name": "City map",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/map"
+      }
+    },
+    {
+      "name": "Fastest route map",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/map?source_id={{source_id}}&target_id={{target_id}}&mode=fastest"
+      }
+    },
+    {
+      "name": "POST route - shortest",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/route",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"source_id\": {{source_id}},\n  \"target_id\": {{target_id}},\n  \"mode\": \"shortest\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Created\", () => pm.response.to.have.status(201));",
+              "pm.test(\"Route and history saved\", () => { const r=pm.response.json(); pm.expect(r.path_ids).to.be.an(\"array\"); pm.expect(r.history_id).to.be.above(0); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "POST route - fastest",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/route",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"source_id\": {{source_id}},\n  \"target_id\": {{target_id}},\n  \"mode\": \"fastest\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Created\", () => pm.response.to.have.status(201));",
+              "pm.test(\"Route and history saved\", () => { const r=pm.response.json(); pm.expect(r.path_ids).to.be.an(\"array\"); pm.expect(r.history_id).to.be.above(0); });"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
